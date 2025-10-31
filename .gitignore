@@ -1,0 +1,13 @@
+.idea/
+.qodo/
+.vs*/
+bin/
+obj/
+Libs/
+TODO.txt
+.vscode/
+packages.lock.json
+Test*/
+*.DotSettings.user
+Ignore/
+.qodo
