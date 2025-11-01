@@ -1,9 +1,22 @@
 ﻿using SRML;
-using SRML.SR;
+using SConsole = SRML.Console.Console;
 
 namespace CinematicCamera;
 
 internal sealed class Main : ModEntryPoint
 {
-    public override void PreLoad() => HarmonyInstance.PatchAll(typeof(Main).Assembly);
+    public static SConsole.ConsoleInstance Console;
+
+    public override void PreLoad()
+    {
+        Console = ConsoleInstance;
+
+        HarmonyInstance.PatchAll(typeof(Main).Assembly);
+
+        SConsole.RegisterCommand(new ToggleHudCommand());
+        SConsole.RegisterCommand(new SmoothTimeCommand());
+        SConsole.RegisterCommand(new LerpFactorCommand());
+        SConsole.RegisterCommand(new CinematicModeCommand());
+        SConsole.RegisterCommand(new ToggleCinematicCommand());
+    }
 }

@@ -17,7 +17,6 @@
         <Configurations>Debug;Release</Configurations>
         <ImplicitUsings>true</ImplicitUsings>
         <PublicizerClearCacheOnClean>true</PublicizerClearCacheOnClean>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup Condition="$(Configuration)==Release">
@@ -25,11 +24,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Reference Include="..\Libs\*.dll"/>
+        <Reference Include="..\Libs\*.dll">
+            <Private>false</Private>
+        </Reference>
 
         <Publicize Include="Assembly-CSharp" />
 
-        <PackageReference Include="Roslynator.Analyzers" Version="4.12.11" PrivateAssets="all" />
+        <PackageReference Include="Roslynator.Analyzers" Version="4.12.11" PrivateAssets="all" ExcludeAssets=""/>
         <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
@@ -37,4 +38,6 @@
 
         <EmbeddedResource Include="Resources\*" />
     </ItemGroup>
+
+    <Import Project="../SlimeRancher.props" />
 </Project>
