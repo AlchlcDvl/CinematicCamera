@@ -1,9 +1,15 @@
 using SRML.Console;
+using UnityEngine;
 using UObject = UnityEngine.Object;
 
 namespace CinematicCamera;
 
-internal sealed class ToggleCinematicCommand : ConsoleCommand
+internal abstract class SceneSpecificCommand : ConsoleCommand
+{
+    public abstract void OnSceneLoaded(SceneContext context);
+}
+
+internal sealed class ToggleCinematicCommand : SceneSpecificCommand
 {
     public override string ID => "togglecinematic";
     public override string Usage => "togglecinematic";
@@ -14,10 +20,13 @@ internal sealed class ToggleCinematicCommand : ConsoleCommand
         CinematicCamera.CinematicEnabled = !CinematicCamera.CinematicEnabled;
 
         foreach (var cam in UObject.FindObjectsOfType<CinematicCamera>())
-            cam.SetCinematic(CinematicCamera.CinematicEnabled);
+            cam.SetCinematic();
 
+        Main.Console.LogSuccess($"Toggled Cinematic Mode: {(CinematicCamera.CinematicEnabled ? "On" : "Off")}");
         return true;
     }
+
+    public override void OnSceneLoaded(SceneContext _) => CinematicCamera.CinematicEnabled = false;
 }
 
 internal sealed class SmoothTimeCommand : ConsoleCommand
@@ -35,6 +44,7 @@ internal sealed class SmoothTimeCommand : ConsoleCommand
         }
 
         CinematicCamera.SmoothTime = value;
+        Main.Console.LogSuccess($"Set SmoothTime: {value}");
         return true;
     }
 }
@@ -60,6 +70,7 @@ internal sealed class LerpFactorCommand : ConsoleCommand
         }
 
         CinematicCamera.LerpFactor = value;
+        Main.Console.LogSuccess($"Set LerpFactor: {value}");
         return true;
     }
 }
@@ -79,6 +90,7 @@ internal sealed class CinematicModeCommand : ConsoleCommand
         }
 
         CinematicCamera.Mode = mode;
+        Main.Console.LogSuccess($"Set Cinematic Mode: {mode}");
         return true;
     }
 
@@ -91,11 +103,11 @@ internal sealed class CinematicModeCommand : ConsoleCommand
     }
 }
 
-internal sealed class ToggleHudCommand : ConsoleCommand
+internal sealed class ToggleHudCommand : SceneSpecificCommand
 {
     public override string ID => "togglehud";
     public override string Usage => "togglehud";
-    public override string Description => "Toggles whether the HUD is visible or not.";
+    public override string Description => "Toggles whether the HUD is visible.";
 
     private static bool HudActive = true;
 
@@ -103,6 +115,29 @@ internal sealed class ToggleHudCommand : ConsoleCommand
     {
         HudActive = !HudActive;
         HudUI.Instance.gameObject.SetActive(HudActive);
+        Main.Console.LogSuccess($"Toggled Hud: {(HudActive ? "On" : "Off")}");
         return true;
     }
+
+    public override void OnSceneLoaded(SceneContext _) => HudActive = true;
+}
+
+internal sealed class ToggleVacPackCommand : SceneSpecificCommand
+{
+    public override string ID => "togglevac";
+    public override string Usage => "togglevac";
+    public override string Description => "Toggles whether the vac pack is visible.";
+
+    private static bool VacActive = true;
+
+    public override bool Execute(string[] args)
+    {
+        VacActive = !VacActive;
+        SceneContext.Instance.player.FindChildWithPartialName("VacuumTransform").SetActive(VacActive);
+
+        Main.Console.LogSuccess($"Toggled Vacuum: {(VacActive ? "On" : "Off")}");
+        return true;
+    }
+
+    public override void OnSceneLoaded(SceneContext _) => VacActive = true;
 }

@@ -8,7 +8,7 @@ internal enum Mode
     Lerp
 }
 
-internal class CinematicCamera : MonoBehaviour
+internal sealed class CinematicCamera : MonoBehaviour
 {
     public static bool CinematicEnabled = false;
     public static Mode Mode = Mode.SmoothDamp;
@@ -81,11 +81,8 @@ internal class CinematicCamera : MonoBehaviour
         Cam.Pitch = newPitch;
     }
 
-    public void SetCinematic(bool on)
+    public void SetCinematic()
     {
-        if (!on)
-            return;
-
         TargetYaw = Cam.Yaw;
         TargetPitch = Cam.Pitch;
         YawVelocity = PitchVelocity = 0f;
