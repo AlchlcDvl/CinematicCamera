@@ -1,5 +1,4 @@
 using SRML.Console;
-using UnityEngine;
 using UObject = UnityEngine.Object;
 
 namespace CinematicCamera;
@@ -20,7 +19,7 @@ internal sealed class ToggleCinematicCommand : SceneSpecificCommand
         CinematicCamera.CinematicEnabled = !CinematicCamera.CinematicEnabled;
 
         foreach (var cam in UObject.FindObjectsOfType<CinematicCamera>())
-            cam.SetCinematic();
+            cam.ResetCinematic();
 
         Main.Console.LogSuccess($"Toggled Cinematic Mode: {(CinematicCamera.CinematicEnabled ? "On" : "Off")}");
         return true;
@@ -83,13 +82,13 @@ internal sealed class CinematicModeCommand : ConsoleCommand
 
     public override bool Execute(string[] args)
     {
-        if (!Enum.TryParse<Mode>(args[0], out var mode))
+        if (!Enum.TryParse<CinematicMode>(args[0], out var mode))
         {
             Main.Console.LogError($"Invalid mode name: {args[0]}");
             return false;
         }
 
-        CinematicCamera.Mode = mode;
+        CinematicCamera.ActiveMode = mode;
         Main.Console.LogSuccess($"Set Cinematic Mode: {mode}");
         return true;
     }
@@ -97,7 +96,7 @@ internal sealed class CinematicModeCommand : ConsoleCommand
     public override List<string> GetAutoComplete(int argIndex, string argText)
     {
         if (argIndex == 0)
-            return [.. Enum.GetNames(typeof(Mode))];
+            return [.. Enum.GetNames(typeof(CinematicMode))];
 
         return base.GetAutoComplete(argIndex, argText);
     }
