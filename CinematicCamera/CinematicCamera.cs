@@ -24,10 +24,10 @@ internal sealed class CinematicCamera : MonoBehaviour
     private float TargetYaw;
     private float TargetPitch;
 
-    public void Awake()
-    {
-        Cam = GetComponent<vp_FPCamera>();
+    public void Awake() => Cam = GetComponent<vp_FPCamera>();
 
+    public void Start()
+    {
         TargetYaw = Cam.m_Yaw;
         TargetPitch = Cam.m_Pitch;
     }
@@ -75,6 +75,7 @@ internal sealed class CinematicCamera : MonoBehaviour
     {
         TargetYaw = Cam.m_Yaw;
         TargetPitch = Cam.m_Pitch;
+
         YawVelocity = PitchVelocity = 0f;
     }
 
